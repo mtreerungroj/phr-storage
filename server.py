@@ -561,11 +561,10 @@ def medicine():
 # Import data
 ###
 
+
 # API for sending only 1 person/time: loop
-
-
 @app.route('/insert/profile', methods=['POST'])
-def profile2():
+def insert_profile():
     if request.method == 'POST':
         obj = request.json
 
@@ -589,7 +588,7 @@ def profile2():
 
 # API for sending only 1 appointment/time: loop
 @app.route('/insert/appointment', methods=['POST'])
-def appointment2():
+def insert_appointment():
     if request.method == 'POST':
         obj = request.json
 
@@ -618,7 +617,6 @@ def appointment2():
 def activity_result_1():
     if request.method == 'POST':
         obj = request.json
-        # print json.dumps(obj, indent=4, separators=(',', ': '))
         userid = obj.get("userid")
         appid = obj.get("appid")
         date = obj.get("date")
@@ -632,7 +630,6 @@ def activity_result_1():
 
         manager.save_batch(table_activity_results_1, rowkey, data)
 
-        # print json.dumps(obj, indent=4, separators=(',', ': '))
         return jsonify(success="true")
 
     elif request.method == 'GET':
@@ -644,17 +641,88 @@ def activity_result_1():
         start_row = base64.b64encode("{}_{}_{}_".format(userid, appid, begin))
         end_row = base64.b64encode("{}_{}_{}_".format(userid, appid, end))
 
-        # desc = manager.fetch_all_with_row_id(table_activity_results_1)
         desc = manager.fetch_from_with_row_id(
-            "activity_result_1", start_row, end_row)
+            table_activity_results_1, start_row, end_row)
+
         desc_list = list(desc)
 
         return jsonify(data=desc_list)
 
 
-@app.route('/test')
+# API for get/post activity result in phase 2
+@app.route('/activity_result/2', methods=['GET', 'POST'])
+def activity_result_2():
+    if request.method == 'POST':
+        obj = request.json
+        userid = obj.get("userid")
+        appid = obj.get("appid")
+        date = obj.get("date")
+        time = obj.get("time")
+        results = obj.get("results")
+
+        rowkey = userid + "_" + appid + "_" + date + "_" + time
+
+        data = {}
+        data['activity_result_2'] = results
+
+        manager.save_batch(table_activity_results_2, rowkey, data)
+
+        return jsonify(success="true")
+
+    elif request.method == 'GET':
+        userid = request.args.get("userid")
+        appid = request.args.get("appid")
+        begin = request.args.get("start_date")  # "2017-09-11"
+        end = request.args.get("end_date")  # 2017-09-15
+
+        start_row = base64.b64encode("{}_{}_{}_".format(userid, appid, begin))
+        end_row = base64.b64encode("{}_{}_{}_".format(userid, appid, end))
+
+        desc = manager.fetch_from_with_row_id(
+            table_activity_results_2, start_row, end_row)
+
+        desc_list = list(desc)
+
+        return jsonify(data=desc_list)
+
+
+# API for get all activity results in phase 1
+@app.route('/activity_result/1/all', methods=['GET'])
+def activity_result_1_all():
+    if request.method == 'GET':
+        desc = manager.fetch_all_with_row_id(table_activity_results_1)
+        desc_list = list(desc)
+
+        return jsonify(data=desc_list)
+
+
+@app.route('/test')  # API for test if server is running /// response in text
 def test():
     return "server is running..."
+
+
+@app.route('/insert/activity_result/1', methods=['POST'])
+def insert_activity_result_1():
+    if request.method == 'POST':
+        obj = request.json
+        activity_results = obj
+
+        for userid_appid_date_time, activity_result in activity_results.items():
+            words = userid_appid_date_time.split('_')
+            userid = words[0]
+            appid = words[1]
+            date = words[2]
+            time = words[3]
+
+            rowkey = userid + "_" + appid + "_" + date + "_" + time
+
+            data = {}
+            data['activity_result_1'] = activity_result
+
+            manager.save_batch(table_activity_results_1, rowkey, data)
+        return jsonify(success="true")
+    else:
+        return jsonify(success="false")
 
 
 if __name__ == '__main__':
