@@ -720,7 +720,7 @@ def insert_activity_result_1():
             data['activity_result_1'] = activity_result
 
             manager.save_batch(table_activity_results_1, rowkey, data)
-        return jsonify(success="true")
+        return jsonify(success="true", data=data)
     else:
         return jsonify(success="false")
 
