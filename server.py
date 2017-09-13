@@ -604,7 +604,7 @@ def import_appointment():
 
             rowkey = userid + "_" + appid + "_" + date
 
-            manager.import_data(table_information, rowkey,
+            manager.insert_data(table_information, rowkey,
                                 'treatment', 'appointment', description)
 
         return jsonify(success="true")
@@ -637,6 +637,12 @@ def activity_result_1():
         appid = request.args.get("appid")
         begin = request.args.get("start_date")  # "2017-09-11"
         end = request.args.get("end_date")  # 2017-09-15
+
+        end = end + dt.timedelta(days=1)
+
+        print "############################ debug"
+        print "begin =>>", begin
+        print "end =>>", end
 
         start_row = base64.b64encode("{}_{}_{}_".format(userid, appid, begin))
         end_row = base64.b64encode("{}_{}_{}_".format(userid, appid, end))
@@ -738,9 +744,9 @@ def import_activity_result_2():
 #
 #
 #
- Test import activity 1 2
- API for get/post surgery, hospital
- API for import surgery, hospital
+#  Test import activity 1 2
+#  API for get/post surgery, hospital
+#  API for import surgery, hospital
 #
 #
 #
