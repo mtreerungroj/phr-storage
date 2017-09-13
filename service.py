@@ -1,7 +1,5 @@
-#!/usr/bin/env python
 import simplejson as json
 import matplotlib
-matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import datetime as dt
 import numpy as np
@@ -70,7 +68,6 @@ def generate_info_nutrient_linechart(data, minValue, maxValue, begin, amount):
 	dic['min'] = []
 	dic['max'] = []
 	i = 0
-	j = 1
 	_amount = amount
 	for date in dateList:
 		_formatted_date = dt.datetime.strptime(date, "%Y-%m-%d")
@@ -91,13 +88,12 @@ def generate_info_nutrient_linechart(data, minValue, maxValue, begin, amount):
 		dic.get('max').append(maxValue)
 		i += 1
 	while i < _amount:
-		_date = last_date + dt.timedelta(days=j)
+		_date = last_date + dt.timedelta(days=i)
 		dic.get('date').append(_date.strftime("%Y-%m-%d"))
 		dic.get('points').append(0)
 		dic.get('min').append(minValue)
 		dic.get('max').append(maxValue)
 		i += 1
-		j += 1
 
 	_list.append(dic)
 
@@ -256,7 +252,6 @@ def generate_date_value_list(data_dic, begin, amount):
 	value = []
 	date_value = []
 	i = 0
-	j = 1
 	_amount = amount
 	last_date = ''
 
@@ -277,11 +272,10 @@ def generate_date_value_list(data_dic, begin, amount):
 		i += 1
 	
 	while i < _amount:
-		_date = last_date + dt.timedelta(days=j)
+		_date = last_date + dt.timedelta(days=i)
 		graphDate.append(_date)
 		value.append(0)
 		i += 1
-		j += 1
 
 	date_value.append(graphDate)
 	date_value.append(value)
