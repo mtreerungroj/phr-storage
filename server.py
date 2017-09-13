@@ -563,8 +563,8 @@ def medicine():
 
 
 # API for sending only 1 person/time: loop
-@app.route('/insert/profile', methods=['POST'])
-def insert_profile():
+@app.route('/import/profile', methods=['POST'])
+def import_profile():
     if request.method == 'POST':
         obj = request.json
 
@@ -587,8 +587,8 @@ def insert_profile():
 
 
 # API for sending only 1 appointment/time: loop
-@app.route('/insert/appointment', methods=['POST'])
-def insert_appointment():
+@app.route('/import/appointment', methods=['POST'])
+def import_appointment():
     if request.method == 'POST':
         obj = request.json
 
@@ -604,7 +604,7 @@ def insert_appointment():
 
             rowkey = userid + "_" + appid + "_" + date
 
-            manager.insert_data(table_information, rowkey,
+            manager.import_data(table_information, rowkey,
                                 'treatment', 'appointment', description)
 
         return jsonify(success="true")
@@ -686,23 +686,9 @@ def activity_result_2():
         return jsonify(data=desc_list)
 
 
-# API for get all activity results in phase 1
-@app.route('/activity_result/1/all', methods=['GET'])
-def activity_result_1_all():
-    if request.method == 'GET':
-        desc = manager.fetch_all_with_row_id(table_activity_results_1)
-        desc_list = list(desc)
-
-        return jsonify(data=desc_list)
-
-
-@app.route('/test')  # API for test if server is running /// response in text
-def test():
-    return "server is running..."
-
-
-@app.route('/insert/activity_result/1', methods=['POST'])
-def insert_activity_result_1():
+# API for sending only 1 actitity/time: loop
+@app.route('/import/activity_result/1', methods=['POST'])
+def import_activity_result_1():
     if request.method == 'POST':
         obj = request.json
         activity_results = obj
@@ -725,5 +711,60 @@ def insert_activity_result_1():
         return jsonify(success="false")
 
 
+# API for sending only 1 actitity/time: loop
+@app.route('/import/activity_result/2', methods=['POST'])
+def import_activity_result_2():
+    if request.method == 'POST':
+        obj = request.json
+        activity_results = obj
+
+        for userid_appid_date_time, activity_result in activity_results.items():
+            words = userid_appid_date_time.split('_')
+            userid = words[0]
+            appid = words[1]
+            date = words[2]
+            time = words[3]
+
+            rowkey = userid + "_" + appid + "_" + date + "_" + time
+
+            data = {}
+            data['activity_result_2'] = activity_result
+
+            manager.save_batch(table_activity_results_1, rowkey, data)
+        return jsonify(success="true", data=data)
+    else:
+        return jsonify(success="false")
+#
+#
+#
+#
+ Test import activity 1 2
+ API for get/post surgery, hospital
+ API for import surgery, hospital
+#
+#
+#
+#
+#
+#
+# API for get all activity results in phase 1
+
+
+@app.route('/activity_result/1/all', methods=['GET'])
+def activity_result_1_all():
+    if request.method == 'GET':
+        desc = manager.fetch_all_with_row_id(table_activity_results_1)
+        desc_list = list(desc)
+
+        return jsonify(data=desc_list)
+
+
+@app.route('/test')  # API for test if server is running /// response in text
+def test():
+    return "server is running..."
+
+  #
+  #
+  #
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True, threaded=True)
