@@ -786,6 +786,41 @@ def import_hospital():
         return jsonify(success="true")
     else:
         return jsonify(success="false")
+
+
+# API for get/post surgery information
+@app.route('/surgery/info', methods=['GET', 'POST'])
+def surgery():
+    if request.method == 'POST':
+        obj = request.json
+        userid = obj.get("userid")
+        hospitalid = obj.get("hospitalid")
+        date = obj.get("date")
+        time = obj.get("time")
+        information = obj.get("information")
+
+        data = {}
+        data['information'] = information
+
+        rowkey = userid + "_" + hospitalid + "_" + date + "_" + time
+        manager.save_batch(table_surgery, rowkey, data)
+
+        return jsonify(success="true")
+
+    elif request.method == 'GET':
+        userid = request.args.get("userid")
+        hospitalid = request.args.get("hospitalid")
+
+        start_row = base64.b64encode("{}_{}_".format(userid, hospitalid))
+
+        desc = manager.fetch_from(table_surgery, start_row)
+
+        desc_list = list(desc)
+
+        return jsonify(data=desc_list)
+
+
+      
 #
 #
 #
@@ -810,6 +845,16 @@ def hospital_all():
         return jsonify(data=desc_list)
 
 
+# API for get all hospitals in phase 1
+@app.route('/surgery/all', methods=['GET'])
+def surgery_all():
+    if request.method == 'GET':
+        desc = manager.fetch_all_with_row_id(table_surgery)
+        desc_list = list(desc)
+
+        return jsonify(data=desc_list)
+
+
 # API for get all activity results in phase 1
 @app.route('/activity_result/1/all', methods=['GET'])
 def activity_result_1_all():
@@ -822,7 +867,7 @@ def activity_result_1_all():
 
 @app.route('/test')  # API for test if server is running /// response in text
 def test():
-    # exists = manager.create_table(table_hospital, 'information')
+    # exists = manager.create_table(table_surgery, 'information')
     return "server is running..."
     # return "exists = ", exists
 
