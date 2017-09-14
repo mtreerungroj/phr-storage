@@ -93,12 +93,16 @@
   {
     "userid": "11111",
     "hospitalid": "HOSPITAL0001",
-    "data": "2017-12-31",
+    "date": "2017-12-31",
     "time": "23:59:00",
-    "type": "Coronary Artery Bypass Graft Surgery",
-    "hospital": "hospital_id",
-    "doctor": "John Doe",
-    "note": "..."
+    "information": {
+      "date": "2017-12-31",
+      "time": "23:59:00",
+      "type": "Coronary Artery Bypass Graft Surgery",
+      "hospital": "hospital_id",
+      "doctor": "John Doe",
+      "note": "..."
+    }
   }
     and post that json via /surgery/info with POST method.
     @app.route('/surgery/info', methods=['GET', 'POST'])
