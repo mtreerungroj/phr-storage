@@ -709,7 +709,7 @@ def import_activity_result_1():
             rowkey = userid + "_" + appid + "_" + date + "_" + time
 
             data = {}
-            data['activity_result_1'] = activity_result
+            data['activity_result_1'] = activity_result['results']
 
             manager.save_batch(table_activity_results_1, rowkey, data)
         return jsonify(success="true", data=data)
@@ -734,7 +734,7 @@ def import_activity_result_2():
             rowkey = userid + "_" + appid + "_" + date + "_" + time
 
             data = {}
-            data['activity_result_2'] = activity_result
+            data['activity_result_2'] = activity_result['results']
 
             manager.save_batch(table_activity_results_1, rowkey, data)
         return jsonify(success="true", data=data)
