@@ -62,12 +62,14 @@
     To add hospital information into database(hadoop), wrap all data to json format like below.
   {
     "hospitalid": "HOSPITAL0001",
-    "name": "PSU Hospital",
-    "type": "Hospital University",
-    "sub_district": "Koh Hong",
-    "district": "Hat Yai",
-    "province": "Songkhla",
-    "phone": "0811111111"
+    "information": {
+      "name": "PSU Hospital",
+      "type": "Hospital University",
+      "sub_district": "Koh Hong",
+      "district": "Hat Yai",
+      "province": "Songkhla",
+      "phone": "0811111111"
+    }
   }
     and post that json via /hospital/info with POST method.
     @app.route('/hospital/info', methods=['GET', 'POST'])
