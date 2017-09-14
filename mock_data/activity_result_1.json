@@ -1,23 +1,23 @@
 {
-  "11111_appid_2017-09-11_18:15:28": { // time = time when add to database
+  "11111_appid_2017-09-12_18:15:28": {
     "results": {
-      "recorder": "nurse_id", // nurse's userid
+      "recorder": "nurse_id",
       "pre_hr": "72",
       "pre_bp": "110/70",
       "post_hr": "112",
       "post_bp": "130/85",
-      "max_level": "9", // 9 of 10
-      "assistant": "2", // number of assistant
-      "start_time": "Mon Sep 11 2017 18:14:28 GMT+0700 (SE Asia Standard Time)", // Date()
-      "stop_time": "Mon Sep 11 2017 18:15:28 GMT+0700 (SE Asia Standard Time)", // Date()
-      "duration": "60000", // time in ms
+      "max_level": "9",
+      "assistant": "2",
+      "start_time": "Mon Sep 12 2017 18:14:28 GMT+0700 (SE Asia Standard Time)",
+      "stop_time": "Mon Sep 12 2017 18:15:28 GMT+0700 (SE Asia Standard Time)",
+      "duration": "60000",
       "note": "This is amazing!",
       "timestamp": ""
     },
-    "date": "2017-09-11",
-    "time": "18:15:28" // HH:MM:SS = time when add to database (stop_time)
+    "date": "2017-09-12",
+    "time": "18:15:28"
   },
-  "11111_appid_2017-09-14_10:02:15": { // time = time when add to database
+  "11111_appid_2017-09-17_10:02:15": {
     "results": {
       "recorder": "nurse_id",
       "pre_hr": "62",
@@ -26,16 +26,16 @@
       "post_bp": "120/81",
       "max_level": "5",
       "assistant": "1",
-      "start_time": "Thu Sep 14 2017 09:55:30 GMT+0700 (SE Asia Standard Time)",
-      "stop_time": "Thu Sep 14 2017 10:02:15 GMT+0700 (SE Asia Standard Time)",
+      "start_time": "Thu Sep 17 2017 09:55:30 GMT+0700 (SE Asia Standard Time)",
+      "stop_time": "Thu Sep 17 2017 10:02:15 GMT+0700 (SE Asia Standard Time)",
       "duration": "420000",
       "note": "This is amazing!",
       "timestamp": ""
     },
-    "date": "2017-09-14",
+    "date": "2017-09-17",
     "time": "10:02:15"
   },
-  "11111_appid_2017-09-08_08:11:00": { // time = time when add to database
+  "11111_appid_2017-09-08_08:11:00": {
     "results": {
       "recorder": "nurse_id",
       "pre_hr": "81",
