@@ -26,6 +26,8 @@ table_exercise = 'exercise'
 table_medicines = 'medicines'
 table_activity_results_1 = 'activity_results_1'
 table_activity_results_2 = 'activity_results_2'
+table_hospital = "hospitals"
+table_surgery = "surgeries"
 
 
 @app.route('/')
@@ -740,11 +742,54 @@ def import_activity_result_2():
         return jsonify(success="true", data=data)
     else:
         return jsonify(success="false")
+
+
+# API for get/post hospital information
+@app.route('/hospital/info', methods=['GET', 'POST'])
+def hospital():
+    if request.method == 'POST':
+        obj = request.json
+        hospitalid = obj.get("hospitalid")
+        information = obj.get("information")
+        data = {}
+        data['information'] = information
+
+        rowkey = hospitalid
+        manager.save_batch(table_hospital, rowkey, data)
+
+        return jsonify(success="true")
+
+    elif request.method == 'GET':
+        hospitalid = request.args.get("hospitalid")
+        rowkey = hospitalid
+        column = 'information'
+        data = manager.fetch(table_hospital, rowkey, column)
+
+        return jsonify(data=data)
+
+
+# API for sending only 1 hospital/time: loop
+@app.route('/import/hospital', methods=['POST'])
+def import_hospital():
+    if request.method == 'POST':
+        obj = request.json
+
+        hospitals = obj
+
+        for hospitalid, information in hospitals.items():
+            data = {}
+            data['information'] = information
+
+            rowkey = hospitalid
+            manager.save_batch(table_hospital, rowkey, data)
+
+        return jsonify(success="true")
+    else:
+        return jsonify(success="false")
 #
 #
 #
 #
-#  Test import activity 1 2
 #  API for get/post surgery, hospital
 #  API for import surgery, hospital
 #
@@ -753,9 +798,19 @@ def import_activity_result_2():
 #
 #
 #
+
+
+# API for get all hospitals in phase 1
+@app.route('/hospital/all', methods=['GET'])
+def hospital_all():
+    if request.method == 'GET':
+        desc = manager.fetch_all_with_row_id(table_hospital)
+        desc_list = list(desc)
+
+        return jsonify(data=desc_list)
+
+
 # API for get all activity results in phase 1
-
-
 @app.route('/activity_result/1/all', methods=['GET'])
 def activity_result_1_all():
     if request.method == 'GET':
@@ -767,10 +822,13 @@ def activity_result_1_all():
 
 @app.route('/test')  # API for test if server is running /// response in text
 def test():
+    # exists = manager.create_table(table_hospital, 'information')
     return "server is running..."
+    # return "exists = ", exists
 
-  #
-  #
-  #
+
+    #
+    #
+    #
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True, threaded=True)
