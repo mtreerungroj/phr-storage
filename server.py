@@ -638,11 +638,8 @@ def activity_result_1():
         begin = request.args.get("start_date")  # "2017-09-11"
         end = request.args.get("end_date")  # 2017-09-15
 
+        end = dt.datetime.strptime(end, "%Y-%m-%d")
         end = end + dt.timedelta(days=1)
-
-        print "############################ debug"
-        print "begin =>>", begin
-        print "end =>>", end
 
         start_row = base64.b64encode("{}_{}_{}_".format(userid, appid, begin))
         end_row = base64.b64encode("{}_{}_{}_".format(userid, appid, end))
@@ -680,6 +677,9 @@ def activity_result_2():
         appid = request.args.get("appid")
         begin = request.args.get("start_date")  # "2017-09-11"
         end = request.args.get("end_date")  # 2017-09-15
+
+        end = dt.datetime.strptime(end, "%Y-%m-%d")
+        end = end + dt.timedelta(days=1)
 
         start_row = base64.b64encode("{}_{}_{}_".format(userid, appid, begin))
         end_row = base64.b64encode("{}_{}_{}_".format(userid, appid, end))
