@@ -714,7 +714,7 @@ def import_activity_result_1():
             data['activity_result_1'] = activity_result['results']
 
             manager.save_batch(table_activity_results_1, rowkey, data)
-        return jsonify(success="true", data=data)
+        return jsonify(success="true")
     else:
         return jsonify(success="false")
 
@@ -820,7 +820,32 @@ def surgery():
         return jsonify(data=desc_list)
 
 
-      
+# API for sending only 1 surgery/time: loop
+@app.route('/import/surgery', methods=['POST'])
+def import_surgery():
+    if request.method == 'POST':
+        obj = request.json
+
+        surgeries = obj
+
+        for userid_hospitalid_date_time, information in surgeries.items():
+            words = userid_hospitalid_date_time.split('_')
+            userid = words[0]
+            hospitalid = words[1]
+            date = words[2]
+            time = words[3]
+
+            rowkey = userid + "_" + hospitalid + "_" + date + "_" + time
+
+            data = {}
+            data['information'] = information
+
+            manager.save_batch(table_surgery, rowkey, data)
+
+        return jsonify(success="true")
+    else:
+        return jsonify(success="false")
+
 #
 #
 #
