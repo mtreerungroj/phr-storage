@@ -846,19 +846,6 @@ def import_surgery():
     else:
         return jsonify(success="false")
 
-#
-#
-#
-#
-#  API for get/post surgery, hospital
-#  API for import surgery, hospital
-#
-#
-#
-#
-#
-#
-
 
 # API for get all hospitals in phase 1
 @app.route('/hospital/all', methods=['GET'])
