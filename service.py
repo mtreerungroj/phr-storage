@@ -6,7 +6,7 @@ import numpy as np
 import base64
 from collections import OrderedDict
 import mock
-import pandas as pd
+# import pandas as pd
 
 
 def get_medicine_schedule(medicine_list):
@@ -325,24 +325,24 @@ def generate_linechart_img(title, date_list, value_list, xlabel, ylabel, chart_t
     return img_path
 
 
-def generate_activity1_linechart_img(title, raw_data):
-    # transform raw_data to data format
-    data = {
-        'date': ['2017-09-11', '2017-09-11', '2017-09-12'],
-        'time': ['09:15:28', '13:15:28', '08:15:28'],
-        'max_level': [2, 4, 5]
-    }
+# def generate_activity1_linechart_img(filename, raw_data):
+#     # transform raw_data to data format
+#     # data = {
+#     #     'date': ['2017-09-11', '2017-09-11', '2017-09-12'],
+#     #     'time': ['09:15:28', '13:15:28', '08:15:28'],
+#     #     'max_level': [2, 4, 5]
+#     # }
 
-    img_path = 'img/value-{}.png'.format(title)
+#     img_path = 'img/value-{}.png'.format(filename)
+#     t = 'Result from ' + raw_data['date'][0] + ' to ' + raw_data['date'][-1]
+#     df = pd.DataFrame(raw_data)
 
-    df = pd.DataFrame(data)
-    t = 'Result from ' + data['date'][0] + ' to ' + data['date'][-1]
-    df.plot(x=['date', 'time'], rot=0, title=t, marker='o', linestyle='--')
-    plt.xlabel('date')
-    plt.ylabel('Max Level (0-10)')
-    plt.ylim([0, 10])
-    plt.show()
+#     df.plot(x=['date', 'time'], rot=0, title=t, marker='o', linestyle='--')
+#     plt.xlabel('date')
+#     plt.ylabel('Max Level (0-10)')
+#     plt.ylim([0, 10])
+#     plt.show()
 
-    plt.savefig('img/value-{}.png'.format(title))
-    plt.clf()
-    return img_path
+#     plt.savefig('img/value-{}.png'.format(filename))
+#     plt.clf()
+#     return img_path

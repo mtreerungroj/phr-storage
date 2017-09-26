@@ -640,6 +640,8 @@ def activity_result_1():
         begin = request.args.get("start_date")  # "2017-09-11"
         end = request.args.get("end_date")  # 2017-09-15
 
+# Get data
+
         end = dt.datetime.strptime(end, "%Y-%m-%d")
         end = end + dt.timedelta(days=1)
 
@@ -652,6 +654,37 @@ def activity_result_1():
         desc_list = list(desc)
 
         return jsonify(data=desc_list)
+
+# ################################# Get image
+
+#         r_date = []
+#         r_time = []
+#         r_max_level = []
+
+#         for userid_appid_date_time, activity_result in desc_list.items():
+#             words = userid_appid_date_time.split('_')
+#             userid = words[0]
+#             appid = words[1]
+#             date = words[2]
+#             time = words[3]
+
+#             r_date.append(date)
+#             r_time.append(time)
+#             r_max_level.append(activity_result['activity_result_1'].max_level)
+
+#         raw_data = {
+#           'date': r_date,
+#           'time': r_time,
+#           'max_level': r_max_level
+#         }
+
+#         filename = r_date[0] + '_' + r_date[-1]
+#         img_path = service.generate_activity1_linechart_img(filename, raw_data)
+
+#         with open(img_path, "rb") as image_file:
+#             encoded_string = base64.b64encode(image_file.read())
+
+#         return jsonify(data=desc_list, image=encoded_string)
 
 
 # API for get/post activity result in phase 2
@@ -882,7 +915,6 @@ def test():
     # exists = manager.create_table(table_surgery, 'information')
     return "server is running..."
     # return "exists = ", exists
-
 
     #
     #
