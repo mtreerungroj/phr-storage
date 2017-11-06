@@ -615,7 +615,7 @@ def import_appointment():
 
 
 # API for get/post activity result in phase 1
-@app.route('/activity_result/1', methods=['GET', 'POST'])
+@app.route('/activity_result/1', methods=['GET', 'POST', 'DELETE'])
 def activity_result_1():
     if request.method == 'POST':
         obj = request.json
@@ -640,7 +640,7 @@ def activity_result_1():
         begin = request.args.get("start_date")  # "2017-09-11"
         end = request.args.get("end_date")  # 2017-09-15
 
-# Get data
+        # Get data
 
         end = dt.datetime.strptime(end, "%Y-%m-%d")
         end = end + dt.timedelta(days=1)
@@ -648,12 +648,24 @@ def activity_result_1():
         start_row = base64.b64encode("{}_{}_{}_".format(userid, appid, begin))
         end_row = base64.b64encode("{}_{}_{}_".format(userid, appid, end))
 
-        desc = manager.fetch_from_with_row_id(
+        desc = manager.fetch_from(
             table_activity_results_1, start_row, end_row)
 
         desc_list = list(desc)
 
         return jsonify(data=desc_list)
+
+    elif request.method == 'DELETE':
+        userid = request.args.get("userid")
+        appid = request.args.get("appid")
+        date = request.args.get("date")
+        time = request.args.get("time")
+
+        rowkey = userid + "_" + appid + "_" + date + "_" + time
+
+        manager.delete_row(table_activity_results_1, rowkey)
+
+        return jsonify(success="true")
 
 # ################################# Get image
 
@@ -688,7 +700,7 @@ def activity_result_1():
 
 
 # API for get/post activity result in phase 2
-@app.route('/activity_result/2', methods=['GET', 'POST'])
+@app.route('/activity_result/2', methods=['GET', 'POST', 'DELETE'])
 def activity_result_2():
     if request.method == 'POST':
         obj = request.json
@@ -725,6 +737,18 @@ def activity_result_2():
         desc_list = list(desc)
 
         return jsonify(data=desc_list)
+
+    elif request.method == 'DELETE':
+        userid = request.args.get("userid")
+        appid = request.args.get("appid")
+        date = request.args.get("date")
+        time = request.args.get("time")
+
+        rowkey = userid + "_" + appid + "_" + date + "_" + time
+
+        manager.delete_row(table_activity_results_2, rowkey)
+
+        return jsonify(success="true")
 
 
 # API for sending only 1 actitity/time: loop
@@ -822,7 +846,7 @@ def import_hospital():
 
 
 # API for get/post surgery information
-@app.route('/surgery/info', methods=['GET', 'POST'])
+@app.route('/surgery/info', methods=['GET', 'POST', 'DELETE'])
 def surgery():
     if request.method == 'POST':
         obj = request.json
@@ -842,15 +866,26 @@ def surgery():
 
     elif request.method == 'GET':
         userid = request.args.get("userid")
-        hospitalid = request.args.get("hospitalid")
 
-        start_row = base64.b64encode("{}_{}_".format(userid, hospitalid))
+        start_row = base64.b64encode("{}_".format(userid))
 
         desc = manager.fetch_from(table_surgery, start_row)
 
         desc_list = list(desc)
 
         return jsonify(data=desc_list)
+
+    elif request.method == 'DELETE':
+        userid = request.args.get("userid")
+        hospitalid = request.args.get("hospitalid")
+        date = request.args.get("date")
+        time = request.args.get("time")
+
+        rowkey = userid + "_" + hospitalid + "_" + date + "_" + time
+
+        manager.delete_row(table_surgery, rowkey)
+
+        return jsonify(success="true")
 
 
 # API for sending only 1 surgery/time: loop
@@ -904,7 +939,7 @@ def surgery_all():
 @app.route('/activity_result/1/all', methods=['GET'])
 def activity_result_1_all():
     if request.method == 'GET':
-        desc = manager.fetch_all_with_row_id(table_activity_results_1)
+        desc = manager.fetch_all(table_activity_results_1)
         desc_list = list(desc)
 
         return jsonify(data=desc_list)
