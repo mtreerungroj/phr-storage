@@ -957,6 +957,16 @@ def patient_code_all():
       return jsonify(data=data_list)
 
 
+# API for get all pin code paired with userid
+@app.route('/pin_code/all', methods=['GET'])
+def pin_code_all():
+    if request.method == 'GET':
+      data = manager.fetch_all_with_row_id(table_pin_code)
+      data_list = list(data)
+
+      return jsonify(data=data_list)
+
+
 # API for generate new patient code
 @app.route('/patient_code/generate', methods=['GET'])
 def patient_code_generate():
@@ -992,6 +1002,41 @@ def patient_code_generate():
         return jsonify(success="true", patient_code=patient_code)
 
 
+# API for generate new patient code
+@app.route('/pin_code/generate', methods=['GET'])
+def pin_code_generate():
+    if request.method == 'GET':
+        appid = request.args.get("appid")
+        userid = request.args.get("userid")
+        
+        # generate pin code here
+        while True:
+          rand = np.random.randint(100000, 999999, 1)[0]
+          pin_code = str(rand)
+
+          rowkey = appid + "_" + pin_code
+          data = manager.fetch(table_pin_code, rowkey)
+
+          if data is None:
+              break
+
+        # save to profile data
+        data1 = {}
+        data1['profile'] = { 'pin_code': pin_code }
+
+        rowkey1 = userid + "_" + appid
+        manager.save_batch(table_information, rowkey1, data1)
+
+        # save to patient code data
+        data2 = {}
+        data2['pin_code']= { 'userid': userid }
+
+        rowkey2 = appid + "_" + pin_code
+        manager.save_batch(table_pin_code, rowkey2, data2)
+
+        return jsonify(success="true", pin_code=pin_code)
+
+
 # API for get userid paired with patient code
 @app.route('/patient_code/check', methods=['GET'])
 def patient_code_check():
@@ -1007,6 +1052,19 @@ def patient_code_check():
         return jsonify(success="true", data=data)
           
 
+# API for get userid paired with patient code
+@app.route('/pin_code/check', methods=['GET'])
+def pin_code_check():
+    if request.method == 'GET':
+        appid = request.args.get("appid")
+        pin_code = request.args.get("pin_code")
+
+        rowkey = appid + "_" + pin_code
+        data = manager.fetch(table_pin_code, rowkey)
+        if data is None:
+          return jsonify(success="false", data=data)
+        
+        return jsonify(success="true", data=data)
 
 
 @app.route('/test')  # API for test if server is running /// response in text
