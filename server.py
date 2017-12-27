@@ -947,6 +947,13 @@ def activity_result_1_all():
         return jsonify(data=desc_list)
 
 
+# API for get all patient code paired with userid
+@app.route('/patient_code/all', methods=['GET'])
+def patient_code_all():
+    if request.method == 'GET':
+      data = fetch_all(table_patient_code)
+
+      return jsonify(data=data)
 
 
 # API for get/post/delete patient code paired with userid
