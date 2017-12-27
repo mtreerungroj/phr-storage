@@ -990,8 +990,12 @@ def patient_code_check():
 
         rowkey = appid + "_" + patient_code
         data = manager.fetch(table_patient_code, rowkey)
+        if data is None:
+          return jsonify(success="false", data=data)
+        
+        return jsonify(success="true", data=data)
+          
 
-        return jsonify(data=data)
 
 
 @app.route('/test')  # API for test if server is running /// response in text
