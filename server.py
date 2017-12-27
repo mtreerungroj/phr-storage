@@ -965,10 +965,19 @@ def patient_code_generate():
         userid = request.args.get("userid")
          
         # generate patient code here
-        code = '0001'
+        while True:
+          rand = np.random.randint(1000, 9999, 1)[0]
+          patient_code = 'PATIENT' + str(rand)
 
+          rowkey = appid + "_" + patient_code
+          data = manager.fetch(table_patient_code, rowkey)
+
+          if data is None:
+            break
+
+        # save data
         data1 = {}
-        data1['profile'] = { 'patient_code': code }
+        data1['profile'] = { 'patient_code': patient_code }
 
         rowkey1 = userid + "_" + appid
         manager.save_batch(table_information, rowkey1, data1)
@@ -978,7 +987,7 @@ def patient_code_generate():
         rowkey2 = appid + "_" + patient_code
         manager.save_batch(table_patient_code, rowkey2, data2)
 
-        return jsonify(success="true", patient_code=code)
+        return jsonify(success="true", patient_code=patient_code)
 
 
 # API for get userid paired with patient code
@@ -1000,15 +1009,16 @@ def patient_code_check():
 
 @app.route('/test')  # API for test if server is running /// response in text
 def test():
+    # return "server is running..."
+
     # exists = manager.create_table(table_patient_code, 'patient_code')
     # tables = manager.all_tables()
     # columns = manager.all_columns(table_patient_code)
-    data = manager.fetch_all(table_information)
-    data_list = list(data)
-    # return "server is running..."
     # return jsonify(table=tables, cloumn=columns)
-    return jsonify(data=data_list)
 
+    rand = np.random.randint(1000, 9999, 1)[0]
+    code = 'PATIENT' + str(rand)
+    return jsonify(code=code)
     #
     #
     #
