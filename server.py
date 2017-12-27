@@ -28,6 +28,8 @@ table_activity_results_1 = 'activity_results_1'
 table_activity_results_2 = 'activity_results_2'
 table_hospital = "hospitals"
 table_surgery = "surgeries"
+table_patient_code = "patient_code"
+table_pin_code = "pin_code"
 
 
 @app.route('/')
@@ -945,11 +947,52 @@ def activity_result_1_all():
         return jsonify(data=desc_list)
 
 
+
+
+# API for get/post/delete patient code paired with userid
+@app.route('/patient_code', methods=['GET', 'POST','DELETE'])
+def patient_code():
+    if request.method == 'POST':
+        obj = request.json
+        appid = obj.get("appid")
+        patient_code = obj.get("patient_code")
+        userid = obj.get("userid")
+
+        data = {}
+        data['userid'] = userid
+
+        rowkey = appid + "_" + patient_code
+        manager.save_batch(table_patient_code, rowkey, data)
+
+        return jsonify(success="true")
+
+    elif request.method == 'GET':
+        appid = request.args.get("appid")
+        patient_code = request.args.get("patient_code")
+
+        rowkey = patient_code + "_" + appid
+
+        data = manager.fetch(table_patient_code, rowkey)
+
+        return jsonify(data=data)
+
+    elif request.method == 'DELETE':
+        appid = request.args.get("appid")
+        patient_code = request.args.get("patient_code")
+
+        rowkey = patient_code + "_" + appid
+
+        manager.delete_row(table_patient_code, rowkey)
+
+        return jsonify(success="true")
+
 @app.route('/test')  # API for test if server is running /// response in text
 def test():
-    # exists = manager.create_table(table_surgery, 'information')
+    # exists = manager.create_table(table_patient_code, 'patient_code')
+    # tables = manager.all_tables()
+    # columns = manager.all_columns(table_patient_code)
     return "server is running..."
-    # return "exists = ", exists
+    # return jsonify(table=tables, cloumn=columns)
 
     #
     #
