@@ -951,14 +951,15 @@ def activity_result_1_all():
 @app.route('/patient_code/all', methods=['GET'])
 def patient_code_all():
     if request.method == 'GET':
-      data = fetch_all(table_patient_code)
+      data = manager.fetch_all(table_patient_code)
+      data_list = list(data)
 
-      return jsonify(data=data)
+      return jsonify(data=data_list)
 
 
 # API for generate new patient code
 @app.route('/patient_code/generate', methods=['GET'])
-def patient_code():
+def patient_code_generate():
     if request.method == 'GET':
         appid = request.args.get("appid")
         userid = request.args.get("userid")
@@ -982,7 +983,7 @@ def patient_code():
 
 # API for get userid paired with patient code
 @app.route('/patient_code/check', methods=['GET'])
-def patient_code():
+def patient_code_check():
     if request.method == 'GET':
         appid = request.args.get("appid")
         patient_code = request.args.get("patient_code")
@@ -998,8 +999,11 @@ def test():
     # exists = manager.create_table(table_patient_code, 'patient_code')
     # tables = manager.all_tables()
     # columns = manager.all_columns(table_patient_code)
-    return "server is running..."
+    data = manager.fetch_all(table_information)
+    data_list = list(data)
+    # return "server is running..."
     # return jsonify(table=tables, cloumn=columns)
+    return jsonify(data=data_list)
 
     #
     #
