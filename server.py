@@ -966,19 +966,31 @@ def patient_code():
         # generate patient code here
         code = '0001'
 
-        data = {}
-        data['profile'] = { 'patient_code': code }
+        data1 = {}
+        data1['profile'] = { 'patient_code': code }
 
         rowkey1 = userid + "_" + appid
-        manager.save_batch(table_information, rowkey1, data)
+        manager.save_batch(table_information, rowkey1, data1)
+
+        data2 = { userid: userid }
 
         rowkey2 = appid + "_" + patient_code
-        manager.save_batch(table_patient_code, rowkey2, data)
+        manager.save_batch(table_patient_code, rowkey2, data2)
 
         return jsonify(success="true", patient_code=code)
 
 
+# API for get userid paired with patient code
+@app.route('/patient_code/check', methods=['GET'])
+def patient_code():
+    if request.method == 'GET':
+        appid = request.args.get("appid")
+        patient_code = request.args.get("patient_code")
 
+        rowkey = appid + "_" + patient_code
+        data = manager.fetch(table_patient_code, rowkey)
+
+        return jsonify(data=data)
 
 
 @app.route('/test')  # API for test if server is running /// response in text
