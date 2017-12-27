@@ -951,7 +951,7 @@ def activity_result_1_all():
 @app.route('/patient_code/all', methods=['GET'])
 def patient_code_all():
     if request.method == 'GET':
-      data = manager.fetch_all(table_patient_code)
+      data = manager.fetch_all_with_row_id(table_patient_code)
       data_list = list(data)
 
       return jsonify(data=data_list)
@@ -963,7 +963,7 @@ def patient_code_generate():
     if request.method == 'GET':
         appid = request.args.get("appid")
         userid = request.args.get("userid")
-         
+        
         # generate patient code here
         while True:
           rand = np.random.randint(1000, 9999, 1)[0]
@@ -973,16 +973,18 @@ def patient_code_generate():
           data = manager.fetch(table_patient_code, rowkey)
 
           if data is None:
-            break
+              break
 
-        # save data
+        # save to profile data
         data1 = {}
         data1['profile'] = { 'patient_code': patient_code }
 
         rowkey1 = userid + "_" + appid
         manager.save_batch(table_information, rowkey1, data1)
 
-        data2 = { userid: userid }
+        # save to patient code data
+        data2 = {}
+        data2['information']= { 'userid': userid }
 
         rowkey2 = appid + "_" + patient_code
         manager.save_batch(table_patient_code, rowkey2, data2)
