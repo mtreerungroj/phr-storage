@@ -956,42 +956,30 @@ def patient_code_all():
       return jsonify(data=data)
 
 
-# API for get/post/delete patient code paired with userid
-@app.route('/patient_code', methods=['GET', 'POST','DELETE'])
+# API for generate new patient code
+@app.route('/patient_code/generate', methods=['GET'])
 def patient_code():
-    if request.method == 'POST':
-        obj = request.json
-        appid = obj.get("appid")
-        patient_code = obj.get("patient_code")
-        userid = obj.get("userid")
+    if request.method == 'GET':
+        appid = request.args.get("appid")
+        userid = request.args.get("userid")
+         
+        # generate patient code here
+        code = '0001'
 
         data = {}
-        data['userid'] = userid
+        data['profile'] = { 'patient_code': code }
 
-        rowkey = appid + "_" + patient_code
-        manager.save_batch(table_patient_code, rowkey, data)
+        rowkey1 = userid + "_" + appid
+        manager.save_batch(table_information, rowkey1, data)
 
-        return jsonify(success="true")
+        rowkey2 = appid + "_" + patient_code
+        manager.save_batch(table_patient_code, rowkey2, data)
 
-    elif request.method == 'GET':
-        appid = request.args.get("appid")
-        patient_code = request.args.get("patient_code")
+        return jsonify(success="true", patient_code=code)
 
-        rowkey = patient_code + "_" + appid
 
-        data = manager.fetch(table_patient_code, rowkey)
 
-        return jsonify(data=data)
 
-    elif request.method == 'DELETE':
-        appid = request.args.get("appid")
-        patient_code = request.args.get("patient_code")
-
-        rowkey = patient_code + "_" + appid
-
-        manager.delete_row(table_patient_code, rowkey)
-
-        return jsonify(success="true")
 
 @app.route('/test')  # API for test if server is running /// response in text
 def test():
