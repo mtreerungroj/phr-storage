@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 import io
 from flask import Flask, request, jsonify, json, send_file
 from flask_cors import CORS, cross_origin
@@ -388,13 +391,15 @@ def profile():
         appid = obj.get("appid")
         profile = obj.get("profile")
 
-        data = {}
-        data['profile'] = profile
+        enc_profile = {k.encode('utf8'): v.encode('utf8') for k, v in profile.items()}
 
-        # print data
+        data = {
+          "profile": enc_profile
+        }
+
+        # print(data)
 
         rowkey = userid + "_" + appid
-
         manager.save_batch(table_information, rowkey, data)
 
         return jsonify(success="true")
@@ -627,7 +632,7 @@ def activity_result_1():
         time = obj.get("time")
         results = obj.get("results")
 
-        results_json = json.dumps(results, ensure_ascii=False)
+        results_json = json.dumps(results, ensure_ascii=False, encoding='utf8')
 
         rowkey = userid + "_" + appid + "_" + date + "_" + time
 
