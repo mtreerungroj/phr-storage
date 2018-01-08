@@ -627,12 +627,15 @@ def activity_result_1():
         time = obj.get("time")
         results = obj.get("results")
 
+        results_json = json.dumps(results, ensure_ascii=False)
+
         rowkey = userid + "_" + appid + "_" + date + "_" + time
 
-        data = {}
-        data['activity_result_1'] = results
+        # data = {}
+        # data['activity_result_1'] = results_json
 
-        manager.save_batch(table_activity_results_1, rowkey, data)
+        # manager.save_batch(table_activity_results_1, rowkey, results_json)
+        manager.insert_data(table_activity_results_1, rowkey, 'activity_result_1', 'result', results_json)
 
         return jsonify(success="true")
 
@@ -654,6 +657,9 @@ def activity_result_1():
             table_activity_results_1, start_row, end_row)
 
         desc_list = list(desc)
+
+        for dl in desc_list:
+          dl['activity_result_1']['result'] = json.loads(dl['activity_result_1']['result'].replace("\'", '"'))
 
         return jsonify(data=desc_list)
 
@@ -710,7 +716,7 @@ def activity_result_2():
         appid = obj.get("appid")
         date = obj.get("date")
         time = obj.get("time")
-        results = obj.get("results")
+        results = json.dumps(obj.get("results"), ensure_ascii=False)
 
         rowkey = userid + "_" + appid + "_" + date + "_" + time
 
