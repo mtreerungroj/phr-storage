@@ -13,3 +13,15 @@ Storage system of the PHR project
 4. cd to the directory where requirements.txt is located 
 5. Install all python pakages from requirements.txt `pip install -r requirements.txt` in your shell.
 6. Run this application server `python server.py`
+
+note:
+```
+git clone new_repo
+cd new_repo
+
+git remote add upstream old_repo
+git remote -v
+
+git pull upstream master
+git push
+```
