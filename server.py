@@ -656,13 +656,13 @@ def activity_result_1():
         start_row = base64.b64encode("{}_{}_{}_".format(userid, appid, begin))
         end_row = base64.b64encode("{}_{}_{}_".format(userid, appid, end))
 
-        desc = manager.fetch_from(
+        desc = manager.fetch_from_with_row_id(
             table_activity_results_1, start_row, end_row)
 
         desc_list = list(desc)
 
         for dl in desc_list:
-          dl['activity_result_1']['result'] = json.loads(dl['activity_result_1']['result'].replace("\'", '"'))
+          dl.values()[0]['activity_result_1']['result'] = json.loads(dl.values()[0]['activity_result_1']['result'].replace("\'", '"'))
 
         return jsonify(data=desc_list)
 
