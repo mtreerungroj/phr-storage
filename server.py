@@ -979,7 +979,7 @@ def pin_code_all():
 
 
 # API for generate new patient code
-@app.route('/patient_code/generate', methods=['GET'])
+@app.route('/patient_code/generate', methods=['GET', 'POST'])
 def patient_code_generate():
     if request.method == 'GET':
         appid = request.args.get("appid")
@@ -1011,6 +1011,24 @@ def patient_code_generate():
         manager.save_batch(table_patient_code, rowkey2, data2)
 
         return jsonify(success="true", patient_code=patient_code)
+
+    if request.method == 'POST':
+        obj = request.json
+        appid = obj.get("appid")
+        patient_code = obj.get("patient_code")
+        gender = obj.get("gender")
+        firstname = obj.get("firstname")
+        lastname = obj.get("lastname")
+        admit_date = obj.get("admit_date")
+
+        data = {}
+        data['information']= { 'gender': gender, 'firstname': firstname, 'lastname': lastname, 'admit_date': admit_date }
+
+        rowkey = appid + "_" + patient_code
+        manager.save_batch(table_patient_code, rowkey, data)
+
+        return jsonify(success="true")
+
 
 
 # API for generate new patient code
