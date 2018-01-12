@@ -391,13 +391,11 @@ def profile():
         appid = obj.get("appid")
         profile = obj.get("profile")
 
-        enc_profile = {k.encode('utf8'): v.encode('utf8') for k, v in profile.items()}
+        enc_profile = {k.encode('utf8'): str(v).encode('utf8') for k, v in profile.items()}
 
         data = {
           "profile": enc_profile
         }
-
-        # print(data)
 
         rowkey = userid + "_" + appid
         manager.save_batch(table_information, rowkey, data)
@@ -1016,13 +1014,13 @@ def patient_code_generate():
         obj = request.json
         appid = obj.get("appid")
         patient_code = obj.get("patient_code")
-        gender = obj.get("gender")
-        firstname = obj.get("firstname")
-        lastname = obj.get("lastname")
-        admit_date = obj.get("admit_date")
+        profile = obj.get("profile")
 
-        data = {}
-        data['information']= { 'gender': gender, 'firstname': firstname, 'lastname': lastname, 'admit_date': admit_date }
+        enc_profile = {k.encode('utf8'): str(v).encode('utf8') for k, v in profile.items()}
+
+        data = {
+          "information": enc_profile
+        }
 
         rowkey = appid + "_" + patient_code
         manager.save_batch(table_patient_code, rowkey, data)
