@@ -977,7 +977,7 @@ def pin_code_all():
 
 
 # API for generate new patient code
-@app.route('/patient_code/generate', methods=['GET', 'POST'])
+@app.route('/patient_code/generate', methods=['GET', 'POST', 'DELETE'])
 def patient_code_generate():
     if request.method == 'GET':
         appid = request.args.get("appid")
@@ -1010,7 +1010,7 @@ def patient_code_generate():
 
         return jsonify(success="true", patient_code=patient_code)
 
-    if request.method == 'POST':
+    elif request.method == 'POST':
         obj = request.json
         appid = obj.get("appid")
         patient_code = obj.get("patient_code")
@@ -1024,6 +1024,16 @@ def patient_code_generate():
 
         rowkey = appid + "_" + patient_code
         manager.save_batch(table_patient_code, rowkey, data)
+
+        return jsonify(success="true")
+
+    elif request.method == 'DELETE':
+        appid = request.args.get("appid")
+        patient_code = request.args.get('patient_code')
+
+        rowkey = appid + "_" + patient_code
+
+        manager.delete_row(table_patient_code, rowkey)
 
         return jsonify(success="true")
 
