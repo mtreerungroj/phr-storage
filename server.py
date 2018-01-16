@@ -1016,8 +1016,9 @@ def patient_code_generate():
         patient_code = obj.get("patient_code")
         profile = obj.get("profile")
 
-        enc_profile = {k.encode('utf8'): str(v).encode('utf8') for k, v in profile.items()}
+        enc_profile = {k.encode('utf8'): v.encode('utf8') for k, v in profile.items()}
 
+        print(enc_profile)
         data = {
           "information": enc_profile
         }
