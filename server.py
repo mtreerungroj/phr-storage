@@ -1003,7 +1003,7 @@ def patient_code_generate():
 
         # save to patient code data
         data2 = {}
-        data2['information']= { 'userid': userid }
+        data2['patient_code']= { 'userid': userid }
 
         rowkey2 = appid + "_" + patient_code
         manager.save_batch(table_patient_code, rowkey2, data2)
@@ -1018,10 +1018,8 @@ def patient_code_generate():
 
         enc_profile = {k.encode('utf8'): v.encode('utf8') for k, v in profile.items()}
 
-        print(enc_profile)
-        data = {
-          "information": enc_profile
-        }
+        data = {}
+        data['patient_code'] = enc_profile
 
         rowkey = appid + "_" + patient_code
         manager.save_batch(table_patient_code, rowkey, data)
@@ -1128,6 +1126,15 @@ def clear_table():
         manager.clear_table(table_name, all_columns)
 
         return jsonify(success=True)
+
+
+@app.route('/check_table/columns', methods=['GET'])
+def check_table_columns():
+    if request.method == 'GET':
+        table_name = request.args.get("table_name")
+
+        all_columns = manager.all_columns(table_name)
+        return jsonify(all_columns=all_columns)
 
 
 if __name__ == '__main__':
