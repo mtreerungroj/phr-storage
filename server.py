@@ -391,7 +391,7 @@ def profile():
         appid = obj.get("appid")
         profile = obj.get("profile")
 
-        enc_profile = {k.encode('utf8'): str(v).encode('utf8') for k, v in profile.items()}
+        enc_profile = {k.encode('utf8'): v.encode('utf8') for k, v in profile.items()}
 
         data = {
           "profile": enc_profile
@@ -996,7 +996,7 @@ def patient_code_generate():
 
         # save to profile data
         data1 = {}
-        data1['profile'] = { 'patient_code': patient_code }
+        data1['profile'] = { 'patient_code': patient_code, 'role': 'patient' }
 
         rowkey1 = userid + "_" + appid
         manager.save_batch(table_information, rowkey1, data1)
@@ -1060,7 +1060,7 @@ def pin_code_generate():
 
         # save to profile data
         data1 = {}
-        data1['profile'] = { 'pin_code': pin_code }
+        data1['profile'] = { 'pin_code': pin_code, 'role': 'nurse' }
 
         rowkey1 = userid + "_" + appid
         manager.save_batch(table_information, rowkey1, data1)
