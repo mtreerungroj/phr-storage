@@ -1117,8 +1117,18 @@ def test():
     rand = np.random.randint(1000, 9999, 1)[0]
     code = 'PATIENT' + str(rand)
     return jsonify(code=code)
-    #
-    #
-    #
+
+
+@app.route('/clear_table', methods=['GET'])
+def clear_table():
+    if request.method == 'GET':
+        table_name = request.args.get("table_name")
+
+        all_columns = manager.all_columns(table_name)
+        manager.clear_table(table_name, all_columns)
+
+        return jsonify(success=True)
+
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True, threaded=True)

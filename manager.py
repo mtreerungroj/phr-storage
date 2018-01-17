@@ -114,8 +114,18 @@ def create_table(table_name, table_column):
     exists = new_table.exists()
     return exists
 
+
 def all_columns(table):
     c = starbase.Connection(port=HBASE_PORT)
     t = c.table(table)
     columns = t.columns()
     return columns
+
+
+def clear_table(table_name, table_columns):
+    c = starbase.Connection(port=HBASE_PORT)
+    t = c.table(table_name)
+    t.drop()
+    exists = create_table(table_name, table_columns)
+    tables = all_tables()
+    return tables
