@@ -982,6 +982,7 @@ def patient_code_generate():
     if request.method == 'GET':
         appid = request.args.get("appid")
         userid = request.args.get("userid")
+        email = request.args.get("email")
         
         # generate patient code here
         while True:
@@ -996,14 +997,14 @@ def patient_code_generate():
 
         # save to profile data
         data1 = {}
-        data1['profile'] = { 'patient_code': patient_code, 'role': 'patient' }
+        data1['profile'] = { 'patient_code': patient_code, 'role': 'patient', 'email': email }
 
         rowkey1 = userid + "_" + appid
         manager.save_batch(table_information, rowkey1, data1)
 
         # save to patient code data
         data2 = {}
-        data2['patient_code']= { 'userid': userid }
+        data2['patient_code']= { 'userid': userid, 'email': email }
 
         rowkey2 = appid + "_" + patient_code
         manager.save_batch(table_patient_code, rowkey2, data2)
@@ -1044,6 +1045,7 @@ def pin_code_generate():
     if request.method == 'GET':
         appid = request.args.get("appid")
         userid = request.args.get("userid")
+        email = request.args.get("email")
         
         # generate pin code here
         while True:
@@ -1058,14 +1060,14 @@ def pin_code_generate():
 
         # save to profile data
         data1 = {}
-        data1['profile'] = { 'pin_code': pin_code, 'role': 'nurse' }
+        data1['profile'] = { 'pin_code': pin_code, 'role': 'nurse', 'email': email }
 
         rowkey1 = userid + "_" + appid
         manager.save_batch(table_information, rowkey1, data1)
 
         # save to patient code data
         data2 = {}
-        data2['pin_code']= { 'userid': userid }
+        data2['pin_code']= { 'userid': userid, 'email': email }
 
         rowkey2 = appid + "_" + pin_code
         manager.save_batch(table_pin_code, rowkey2, data2)
