@@ -382,7 +382,7 @@ def appointment():
         return jsonify(data=data_json)
 
 
-@app.route('/profile/info', methods=['GET', 'POST'])
+@app.route('/profile/info', methods=['GET', 'POST', 'DELETE'])
 def profile():
     if request.method == 'POST':
         obj = request.json
@@ -412,6 +412,16 @@ def profile():
         data = manager.fetch(table_information, rowkey, column)
 
         return jsonify(data=data)
+
+    elif request.method == 'DELETE':
+        userid = request.args.get("userid")
+        appid = request.args.get("appid")
+
+        rowkey = userid + "_" + appid
+
+        manager.delete_row(table_information, rowkey)
+
+        return jsonify(success="true")
 
 #######
 # Exercise
@@ -1137,6 +1147,16 @@ def check_table_columns():
 
         all_columns = manager.all_columns(table_name)
         return jsonify(all_columns=all_columns)
+
+
+# API for get all patient code paired with userid
+@app.route('/overview/piechart', methods=['GET'])
+def overview_piechart():
+    if request.method == 'GET':
+      data = manager.fetch_all_with_row_id(table_information)
+      data_list = list(data)
+
+      return jsonify(data=data_list)
 
 
 if __name__ == '__main__':
