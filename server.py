@@ -1156,7 +1156,18 @@ def overview_piechart():
       data = manager.fetch_all_with_row_id(table_information)
       data_list = list(data)
 
-      return jsonify(data=data_list)
+      _data = {}
+      for user in data_list:
+          if user.values()[0]['profile']['role'] == 'patient':
+              userid = user.keys()[0][:-5]
+              _data[userid] = {
+                "patient_code": user.values()[0]['profile']['patient_code'],
+                "level": user.values()[0]['profile']['level'],
+                "firstname": user.values()[0]['profile']['firstname'],
+                "lastname": user.values()[0]['profile']['lastname']
+              }
+
+      return jsonify(data=_data)
 
 
 if __name__ == '__main__':
