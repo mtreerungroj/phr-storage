@@ -993,6 +993,7 @@ def patient_code_generate():
         appid = request.args.get("appid")
         userid = request.args.get("userid")
         email = request.args.get("email")
+        admit_date = request.args.get("admit_date")
         
         # generate patient code here
         while True:
@@ -1007,14 +1008,14 @@ def patient_code_generate():
 
         # save to profile data
         data1 = {}
-        data1['profile'] = { 'patient_code': patient_code, 'role': 'patient', 'email': email }
+        data1['profile'] = { 'patient_code': patient_code, 'role': 'patient', 'email': email, 'level': 0 }
 
         rowkey1 = userid + "_" + appid
         manager.save_batch(table_information, rowkey1, data1)
 
         # save to patient code data
         data2 = {}
-        data2['patient_code']= { 'userid': userid, 'email': email }
+        data2['patient_code']= { 'userid': userid, 'email': email, 'admit_date': admit_date }
 
         rowkey2 = appid + "_" + patient_code
         manager.save_batch(table_patient_code, rowkey2, data2)
