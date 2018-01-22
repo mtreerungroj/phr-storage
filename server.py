@@ -1161,12 +1161,13 @@ def overview_piechart():
       for user in data_list:
           if user.values()[0]['profile']['role'] == 'patient':
               userid = user.keys()[0][:-5]
-              _data[userid] = {
-                "patient_code": user.values()[0]['profile']['patient_code'],
-                "level": user.values()[0]['profile']['level'],
-                "firstname": user.values()[0]['profile']['firstname'],
-                "lastname": user.values()[0]['profile']['lastname']
-              }
+              if 'firstname' in user.values()[0]['profile'].keys() and 'lastname' in user.values()[0]['profile'].keys():
+                  _data[userid] = {
+                    "patient_code": user.values()[0]['profile']['patient_code'],
+                    "level": user.values()[0]['profile']['level'],
+                    "firstname": user.values()[0]['profile']['firstname'],
+                    "lastname": user.values()[0]['profile']['lastname']
+                  }
 
       return jsonify(data=_data)
 
