@@ -33,6 +33,7 @@ table_hospital = "hospitals"
 table_surgery = "surgeries"
 table_patient_code = "patient_code"
 table_pin_code = "pin_code"
+table_6minswalk = "6minswalk"
 
 
 @app.route('/')
@@ -1116,20 +1117,6 @@ def pin_code_check():
         return jsonify(success="true", data=data)
 
 
-@app.route('/test')  # API for test if server is running /// response in text
-def test():
-    # return "server is running..."
-
-    # exists = manager.create_table(table_patient_code, 'patient_code')
-    # tables = manager.all_tables()
-    # columns = manager.all_columns(table_patient_code)
-    # return jsonify(table=tables, cloumn=columns)
-
-    rand = np.random.randint(1000, 9999, 1)[0]
-    code = 'PATIENT' + str(rand)
-    return jsonify(code=code)
-
-
 @app.route('/clear_table', methods=['GET'])
 def clear_table():
     if request.method == 'GET':
@@ -1170,6 +1157,72 @@ def overview_piechart():
                   }
 
       return jsonify(data=_data)
+
+
+@app.route('/6minswalk/info', methods=['GET', 'POST', 'DELETE'])
+def six_mins_walk():
+    if request.method == 'POST':
+        obj = request.json
+
+        userid = obj.get("userid")
+        appid = obj.get("appid")
+        date = obj.get("date")
+        time = obj.get("time")
+        results = obj.get("results")
+
+        results_json = json.dumps(results, ensure_ascii=False, encoding='utf8')
+
+        rowkey = userid + "_" + appid + "_" + date + "_" + time
+
+        manager.insert_data(table_6minswalk, rowkey, '6minswalk', 'result', results_json)
+
+        return jsonify(success="true")
+
+
+        rowkey = userid + "_" + appid + "_" + date + "_" + time
+
+    elif request.method == 'GET':
+        userid = request.args.get("userid")
+        appid = request.args.get("appid")
+
+        # Get data
+        start_row = base64.b64encode("{}_{}_".format(userid, appid))
+
+        desc = manager.fetch_from_with_row_id(
+            table_6minswalk, start_row)
+
+        desc_list = list(desc)
+
+        for dl in desc_list:
+          dl.values()[0]['6minswalk']['result'] = json.loads(dl.values()[0]['6minswalk']['result'].replace("\'", '"'))
+
+        return jsonify(data=desc_list)
+
+    elif request.method == 'DELETE':
+        userid = request.args.get("userid")
+        appid = request.args.get("appid")
+        date = request.args.get("date")
+        time = request.args.get("time")
+
+        rowkey = userid + "_" + appid + "_" + date + "_" + time
+
+        manager.delete_row(table_6minswalk, rowkey)
+
+        return jsonify(success="true")
+
+
+@app.route('/test')  # API for test if server is running /// response in text
+def test():
+    return "server is running..."
+
+    # exists = manager.create_table(table_6minswalk, '6minswalk')
+    # tables = manager.all_tables()
+    # columns = manager.all_columns(table_patient_code)
+    # return jsonify(table=tables, cloumn=columns)
+
+    # rand = np.random.randint(1000, 9999, 1)[0]
+    # code = 'PATIENT' + str(rand)
+    # return jsonify(code=code)
 
 
 if __name__ == '__main__':
