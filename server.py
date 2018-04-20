@@ -383,6 +383,28 @@ def appointment():
         return jsonify(data=data_json)
 
 
+@app.route('/profile2/info', methods=['POST'])
+def profile2():
+    if request.method == 'POST':
+        obj = request.json
+
+        userid = obj.get("userid")
+        appid = obj.get("appid")
+        profile = obj.get("profile")
+
+        enc_profile = {k.encode('utf8'): v.encode('utf8')
+                       for k, v in profile.items()}
+
+        data = {
+            "profile": enc_profile
+        }
+
+        rowkey = userid + "_" + appid
+        manager.save_batch(table_information, rowkey, data)
+
+        return jsonify(success="true")
+
+
 @app.route('/profile/info', methods=['GET', 'POST', 'DELETE'])
 def profile():
     if request.method == 'POST':
@@ -392,10 +414,11 @@ def profile():
         appid = obj.get("appid")
         profile = obj.get("profile")
 
-        enc_profile = {k.encode('utf8'): v.encode('utf8') for k, v in profile.items()}
+        enc_profile = {str(k).encode('utf8'): str(v).encode('utf8')
+                       for k, v in profile.items()}
 
         data = {
-          "profile": enc_profile
+            "profile": enc_profile
         }
 
         rowkey = userid + "_" + appid
@@ -649,7 +672,8 @@ def activity_result_1():
         # data['activity_result_1'] = results_json
 
         # manager.save_batch(table_activity_results_1, rowkey, results_json)
-        manager.insert_data(table_activity_results_1, rowkey, 'activity_result_1', 'result', results_json)
+        manager.insert_data(table_activity_results_1, rowkey,
+                            'activity_result_1', 'result', results_json)
 
         return jsonify(success="true")
 
@@ -673,7 +697,8 @@ def activity_result_1():
         desc_list = list(desc)
 
         for dl in desc_list:
-          dl.values()[0]['activity_result_1']['result'] = json.loads(dl.values()[0]['activity_result_1']['result'].replace("\'", '"'))
+            dl.values()[0]['activity_result_1']['result'] = json.loads(
+                dl.values()[0]['activity_result_1']['result'].replace("\'", '"'))
 
         return jsonify(data=desc_list)
 
@@ -971,20 +996,20 @@ def activity_result_1_all():
 @app.route('/patient_code/all', methods=['GET'])
 def patient_code_all():
     if request.method == 'GET':
-      data = manager.fetch_all_with_row_id(table_patient_code)
-      data_list = list(data)
+        data = manager.fetch_all_with_row_id(table_patient_code)
+        data_list = list(data)
 
-      return jsonify(data=data_list)
+        return jsonify(data=data_list)
 
 
 # API for get all pin code paired with userid
 @app.route('/pin_code/all', methods=['GET'])
 def pin_code_all():
     if request.method == 'GET':
-      data = manager.fetch_all_with_row_id(table_pin_code)
-      data_list = list(data)
+        data = manager.fetch_all_with_row_id(table_pin_code)
+        data_list = list(data)
 
-      return jsonify(data=data_list)
+        return jsonify(data=data_list)
 
 
 # API for generate new patient code
@@ -995,28 +1020,30 @@ def patient_code_generate():
         userid = request.args.get("userid")
         email = request.args.get("email")
         admit_date = request.args.get("admit_date")
-        
+
         # generate patient code here
         while True:
-          rand = np.random.randint(1000, 9999, 1)[0]
-          patient_code = 'PATIENT' + str(rand)
+            rand = np.random.randint(1000, 9999, 1)[0]
+            patient_code = 'PATIENT' + str(rand)
 
-          rowkey = appid + "_" + patient_code
-          data = manager.fetch(table_patient_code, rowkey)
+            rowkey = appid + "_" + patient_code
+            data = manager.fetch(table_patient_code, rowkey)
 
-          if data is None:
-              break
+            if data is None:
+                break
 
         # save to profile data
         data1 = {}
-        data1['profile'] = { 'patient_code': patient_code, 'role': 'patient', 'email': email, 'level': 0 }
+        data1['profile'] = {'patient_code': patient_code,
+                            'role': 'patient', 'email': email, 'level': 0}
 
         rowkey1 = userid + "_" + appid
         manager.save_batch(table_information, rowkey1, data1)
 
         # save to patient code data
         data2 = {}
-        data2['patient_code']= { 'userid': userid, 'email': email, 'admit_date': admit_date }
+        data2['patient_code'] = {'userid': userid,
+                                 'email': email, 'admit_date': admit_date}
 
         rowkey2 = appid + "_" + patient_code
         manager.save_batch(table_patient_code, rowkey2, data2)
@@ -1029,7 +1056,8 @@ def patient_code_generate():
         patient_code = obj.get("patient_code")
         profile = obj.get("profile")
 
-        enc_profile = {k.encode('utf8'): v.encode('utf8') for k, v in profile.items()}
+        enc_profile = {k.encode('utf8'): v.encode('utf8')
+                       for k, v in profile.items()}
 
         data = {}
         data['patient_code'] = enc_profile
@@ -1050,7 +1078,6 @@ def patient_code_generate():
         return jsonify(success="true")
 
 
-
 # API for generate new patient code
 @app.route('/pin_code/generate', methods=['GET'])
 def pin_code_generate():
@@ -1058,28 +1085,29 @@ def pin_code_generate():
         appid = request.args.get("appid")
         userid = request.args.get("userid")
         email = request.args.get("email")
-        
+
         # generate pin code here
         while True:
-          rand = np.random.randint(100000, 999999, 1)[0]
-          pin_code = str(rand)
+            rand = np.random.randint(100000, 999999, 1)[0]
+            pin_code = str(rand)
 
-          rowkey = appid + "_" + pin_code
-          data = manager.fetch(table_pin_code, rowkey)
+            rowkey = appid + "_" + pin_code
+            data = manager.fetch(table_pin_code, rowkey)
 
-          if data is None:
-              break
+            if data is None:
+                break
 
         # save to profile data
         data1 = {}
-        data1['profile'] = { 'pin_code': pin_code, 'role': 'nurse', 'email': email }
+        data1['profile'] = {'pin_code': pin_code,
+                            'role': 'nurse', 'email': email}
 
         rowkey1 = userid + "_" + appid
         manager.save_batch(table_information, rowkey1, data1)
 
         # save to patient code data
         data2 = {}
-        data2['pin_code']= { 'userid': userid, 'email': email }
+        data2['pin_code'] = {'userid': userid, 'email': email}
 
         rowkey2 = appid + "_" + pin_code
         manager.save_batch(table_pin_code, rowkey2, data2)
@@ -1097,10 +1125,10 @@ def patient_code_check():
         rowkey = appid + "_" + patient_code
         data = manager.fetch(table_patient_code, rowkey)
         if data is None:
-          return jsonify(success="false", data=data)
-        
+            return jsonify(success="false", data=data)
+
         return jsonify(success="true", data=data)
-          
+
 
 # API for get userid paired with patient code
 @app.route('/pin_code/check', methods=['GET'])
@@ -1112,8 +1140,8 @@ def pin_code_check():
         rowkey = appid + "_" + pin_code
         data = manager.fetch(table_pin_code, rowkey)
         if data is None:
-          return jsonify(success="false", data=data)
-        
+            return jsonify(success="false", data=data)
+
         return jsonify(success="true", data=data)
 
 
@@ -1141,22 +1169,22 @@ def check_table_columns():
 @app.route('/overview/piechart', methods=['GET'])
 def overview_piechart():
     if request.method == 'GET':
-      data = manager.fetch_all_with_row_id(table_information)
-      data_list = list(data)
+        data = manager.fetch_all_with_row_id(table_information)
+        data_list = list(data)
 
-      _data = {}
-      for user in data_list:
-          if user.values()[0]['profile']['role'] == 'patient':
-              userid = user.keys()[0][:-5]
-              if 'firstname' in user.values()[0]['profile'].keys() and 'lastname' in user.values()[0]['profile'].keys():
-                  _data[userid] = {
-                    "patient_code": user.values()[0]['profile']['patient_code'],
-                    "level": user.values()[0]['profile']['level'],
-                    "firstname": user.values()[0]['profile']['firstname'],
-                    "lastname": user.values()[0]['profile']['lastname']
-                  }
+        _data = {}
+        for user in data_list:
+            if user.values()[0]['profile']['role'] == 'patient':
+                userid = user.keys()[0][:-5]
+                if 'firstname' in user.values()[0]['profile'].keys() and 'lastname' in user.values()[0]['profile'].keys():
+                    _data[userid] = {
+                        "patient_code": user.values()[0]['profile']['patient_code'],
+                        "level": user.values()[0]['profile']['level'],
+                        "firstname": user.values()[0]['profile']['firstname'],
+                        "lastname": user.values()[0]['profile']['lastname']
+                    }
 
-      return jsonify(data=_data)
+        return jsonify(data=_data)
 
 
 @app.route('/6minswalk/info', methods=['GET', 'POST', 'DELETE'])
@@ -1174,10 +1202,10 @@ def six_mins_walk():
 
         rowkey = userid + "_" + appid + "_" + date + "_" + time
 
-        manager.insert_data(table_6minswalk, rowkey, '6minswalk', 'result', results_json)
+        manager.insert_data(table_6minswalk, rowkey,
+                            '6minswalk', 'result', results_json)
 
         return jsonify(success="true")
-
 
         rowkey = userid + "_" + appid + "_" + date + "_" + time
 
@@ -1194,7 +1222,8 @@ def six_mins_walk():
         desc_list = list(desc)
 
         for dl in desc_list:
-          dl.values()[0]['6minswalk']['result'] = json.loads(dl.values()[0]['6minswalk']['result'].replace("\'", '"'))
+            dl.values()[0]['6minswalk']['result'] = json.loads(
+                dl.values()[0]['6minswalk']['result'].replace("\'", '"'))
 
         return jsonify(data=desc_list)
 
